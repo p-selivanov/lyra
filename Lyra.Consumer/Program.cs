@@ -8,9 +8,10 @@ namespace Lyra.Consumer
 {
     public static class Program
     {
-        private const string RabbitHost = "localhost";
-        private const string RabbitUserName = "admin";
-        private const string RabbitPassword = "admin";
+        public const string SqlConnectionString = "Server=.;Initial Catalog=LyraConsumer;Integrated Security=True;";
+        public const string RabbitHost = "localhost";
+        public const string RabbitUserName = "admin";
+        public const string RabbitPassword = "admin";
 
         public static async Task Main()
         {
@@ -27,9 +28,6 @@ namespace Lyra.Consumer
 
                 busConfig.ReceiveEndpoint("lyra-consumer-events", endpointConfig =>
                 {
-                    //endpointConfig.SetQueueArgument("x-single-active-consumer", true);
-                    //endpointConfig.UseConcurrencyLimit(1);
-
                     endpointConfig.Consumer<CustomerChangedEventConsumer>();
                 });
             });

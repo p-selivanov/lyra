@@ -72,13 +72,5 @@ namespace Lyra.Producer
 
             return events;
         }
-
-        private static void PrintEvents(IEnumerable<CustomerChangedEvent> events)
-        {
-            foreach(var @event in events)
-            {
-                Console.Out.WriteLine($"{@event.CustomerId:00} - {@event.Balance:000}");
-            }
-        }
     }
 }

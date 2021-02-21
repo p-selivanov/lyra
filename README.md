@@ -4,11 +4,11 @@
 drop table [Customers]
 
 create table [Customers] (
-	[Id] int not null primary key,
+	[Id] int not null primary key identity(1,1(,
 	[Balance] int not null
 )
 
-insert into [Customers] ([Id], [Balance]) values ((select max([Id]) + 1 from [Customers]), 0)
+insert into [Customers] ([Balance]) values (0)
 go 10
 
 select * from [Customers]

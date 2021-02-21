@@ -31,18 +31,18 @@ namespace Lyra.Producer
 
             await busControl.StartAsync(source.Token);
 
-            var events = GenerateEvents();
+            var events = await GenerateEventsAsync();
             foreach (var @event in events)
             {
                 await busControl.Publish<CustomerChangedEvent>(@event);
 
-                Console.Out.WriteLine($"Published {@event.CustomerId:00}:{@event.Balance:000}");
+                Console.Out.WriteLine($"Published {@event.CustomerId:00}:{@event.Balance:000} {@event.Timestamp:HH:mm:ss:fff}");
             }
 
             Console.WriteLine("DONE");
         }
 
-        private static IEnumerable<CustomerChangedEvent> GenerateEvents()
+        private static async Task<IEnumerable<CustomerChangedEvent>> GenerateEventsAsync()
         {
             var rnd = new Random();
             var events = new List<CustomerChangedEvent>();
@@ -50,6 +50,8 @@ namespace Lyra.Producer
 
             while (events.Count < eventCount)
             {
+                await Task.Delay(5);
+
                 var customerId = rnd.Next(1, CustomerCount + 1);
                 var customerEventCount = events.Count(x => x.CustomerId == customerId);
                 if (customerEventCount >= CustomerEventCount)
@@ -67,6 +69,7 @@ namespace Lyra.Producer
                 {
                     CustomerId = customerId,
                     Balance = maxBalance + 10,
+                    Timestamp = DateTime.Now,
                 });
             }
 

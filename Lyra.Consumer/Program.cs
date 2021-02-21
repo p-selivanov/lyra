@@ -29,6 +29,11 @@ namespace Lyra.Consumer
                 busConfig.ReceiveEndpoint("lyra-consumer-events", endpointConfig =>
                 {
                     endpointConfig.Consumer<CustomerChangedEventConsumer>();
+
+                    endpointConfig.UseMessageRetry(retryConfig =>
+                    {
+                        retryConfig.Incremental(5, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(1));
+                    });
                 });
             });
 

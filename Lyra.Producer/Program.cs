@@ -36,7 +36,7 @@ namespace Lyra.Producer
             {
                 await busControl.Publish<CustomerChangedEvent>(@event);
 
-                Console.Out.WriteLine($"Published {@event.CustomerId:00}:{@event.Balance:000}");
+                Console.Out.WriteLine($"Published {@event.CustomerId:00}:{@event.Balance:000} v{@event.TargetEntityVersion:00}");
             }
 
             Console.WriteLine("DONE");
@@ -67,6 +67,7 @@ namespace Lyra.Producer
                 {
                     CustomerId = customerId,
                     Balance = maxBalance + 10,
+                    TargetEntityVersion = customerEventCount,
                 });
             }
 

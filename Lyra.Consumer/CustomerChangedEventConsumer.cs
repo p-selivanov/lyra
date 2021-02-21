@@ -18,22 +18,36 @@ namespace Lyra.Consumer
 
             await Task.Delay(Rnd.Next(50, 500));
 
+            int updatedCount = 0;
             try
             {
                 using var connection = new SqlConnection(Program.SqlConnectionString);
                 await connection.OpenAsync();
 
-                var updatedCount = await connection.ExecuteAsync(
-                    "update [Customers] set [Balance] = @Balance where [Id] = @Id",
-                    new { Id = context.Message.CustomerId, Balance = context.Message.Balance });
-
-                Console.Out.WriteLine($"Consumer {description} completed.");
+                updatedCount = await connection.ExecuteAsync(
+@"update [Customers] 
+set [Balance] = @Balance, [Version] = @Version + 1
+where [Id] = @Id and [Version] = @Version",
+                    new 
+                    { 
+                        Id = context.Message.CustomerId, 
+                        Balance = context.Message.Balance, 
+                        Version = context.Message.TargetEntityVersion 
+                    });
             }
             catch(Exception ex)
             {
                 Console.Error.WriteLine($"Consumer {description}: {ex.Message}");
                 throw;
             }
+
+            if (updatedCount <= 0)
+            {
+                Console.Error.WriteLine($"Consumer {description} RETRY.");
+                throw new Exception();
+            }
+
+            Console.Out.WriteLine($"Consumer {description} completed. Try count {context.GetRetryCount() + 1}");
         }
     }
 }

@@ -4,8 +4,8 @@
 drop table [Customers]
 
 create table [Customers] (
-	[Id] int not null primary key identity(1,1(,
-	[Balance] int not null
+	[Id] int not null primary key identity(1,1),
+	[Balance] int not null,
 )
 
 insert into [Customers] ([Balance]) values (0)
